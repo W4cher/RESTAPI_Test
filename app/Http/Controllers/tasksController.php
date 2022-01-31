@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\task;
 use Illuminate\Http\Request;
 use App\tasks;
 
 class tasksController extends Controller
 {
+    function list()
+    {
+        return tasks::all();
+    }
+
     function add (Request $req)
     {
         $device = new tasks;
