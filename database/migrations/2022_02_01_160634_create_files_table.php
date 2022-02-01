@@ -15,9 +15,10 @@ class CreateFilesTable extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->integer('task_id')->unsigned();
+            $table->bigInteger('task_id')->unsigned();
             $table->foreign('task_id')->references('id')->on('tasks');
             $table->string('filename');
+            $table->string('path');
             $table->timestamps();
         });
     }

@@ -20,7 +20,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="file" class="form-control" name="files[]" multiple />
+                <input type="file" class="form-control" name="files[]" multiple v-on:change="onChange" />
             </div>
             <button v-on:click="createTask" class="btn btn-success">Create</button>
         </div>
@@ -33,6 +33,7 @@
                         <th>Title</th>
                         <th>Description</th>
                         <th>Status</th>
+                        <th>Files</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -77,6 +78,7 @@
                                 <option value="FEITO">Feito</option>
                             </select>
                         </td>
+                        <td>{{task.filesCount}}</td>
                         <td>
                             <a href="#" @click.prevent="startEditing(index)" class="btn btn-primary btn-sm">
                                 Edit<i class="glyphicon glyphicon-edit"></i>
@@ -110,6 +112,7 @@ export default {
             editOffset: -1,
             editPost: {},
             tasks: [],
+            files: [],
             title: "",
             description: "",
             status: "",
@@ -122,6 +125,10 @@ export default {
     },
 
     methods: {
+        onChange(e) {
+            this.files = e.target.files;
+            console.log("FILES", e.target.files)
+        },
         loadData() {
             let url = `${baseUrl}/api/tasks`;
             this.axios.get(url).then((response) => {
@@ -137,15 +144,29 @@ export default {
             this.editPost = this.tasks[index]
         },
         createTask() {
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
             let url = `${baseUrl}/api/tasks`;
-            var data = {
-                'title': this.title,
-                'description': this.description,
-                'status': this.status,
-                // 'attached_images' = "";
-            };
+            // var data = {
+            //     'title': this.title,
+            //     'description': this.description,
+            //     'files': this.files,
+            //     'status': this.status,
+            // };
 
-            this.axios.post(url, data)
+            var data = new FormData();
+            data.append('title', this.title);
+            data.append('description', this.description);
+            data.append('status', this.status);
+
+            Object.values(this.files).forEach(item => {
+                data.append('files[]', item);
+            });
+
+            this.axios.post(url, data, config)
             .then((response) => {
                 var data = response.data;
                 var tasks = this.tasks;

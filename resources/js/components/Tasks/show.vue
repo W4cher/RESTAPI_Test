@@ -2,7 +2,15 @@
     <div class="container">
         <!-- <button v-on:click="handlShowCreateForm" class="btn btn-success">Add New </button> -->
         <div>
-            <h2 class="text-left p-2 text-black mt-5">Showing Task: {{task.title}}</h2>
+            <p class="text-left pb-0 mb-0"><span :class="'badge badge-' + this.getbBadge(task.status)">{{task.status}}</span></p>
+            <h2 class="text-left pt-2 text-black mt-0">Showing Task: {{task.title}}</h2>
+            <p class="text-left">{{task.description}}</p>
+            <p>FILES</p>
+            <ul>
+                <li v-for="(file) in task.files " v-bind:key="file.id">
+                    {{ file.filename }}
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -18,6 +26,12 @@ export default {
     data() {
         return {
             task: {},
+            badges: {
+                "PENDING": 'default',
+                "ACTIVO": 'warning',
+                "FEITO": 'success',
+
+            },
             title: "",
             description: "",
             status: "",
@@ -30,6 +44,9 @@ export default {
     },
 
     methods: {
+        getbBadge(status){
+            return this.badges[status]
+        },
         loadData() {
             var taskId = this.$route.params.id;
             let url = `${baseUrl}/api/tasks/${taskId}`;

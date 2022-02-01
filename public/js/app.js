@@ -2099,6 +2099,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 var baseUrl = "http://localhost:8000";
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Contact",
@@ -2110,6 +2112,7 @@ var baseUrl = "http://localhost:8000";
       editOffset: -1,
       editPost: {},
       tasks: [],
+      files: [],
       title: "",
       description: "",
       status: ""
@@ -2120,6 +2123,10 @@ var baseUrl = "http://localhost:8000";
     this.loadData();
   },
   methods: {
+    onChange: function onChange(e) {
+      this.files = e.target.files;
+      console.log("FILES", e.target.files);
+    },
     loadData: function loadData() {
       var _this = this;
 
@@ -2139,14 +2146,26 @@ var baseUrl = "http://localhost:8000";
     createTask: function createTask() {
       var _this2 = this;
 
-      var url = "".concat(baseUrl, "/api/tasks");
-      var data = {
-        'title': this.title,
-        'description': this.description,
-        'status': this.status // 'attached_images' = "";
-
+      var config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
       };
-      this.axios.post(url, data).then(function (response) {
+      var url = "".concat(baseUrl, "/api/tasks"); // var data = {
+      //     'title': this.title,
+      //     'description': this.description,
+      //     'files': this.files,
+      //     'status': this.status,
+      // };
+
+      var data = new FormData();
+      data.append('title', this.title);
+      data.append('description', this.description);
+      data.append('status', this.status);
+      Object.values(this.files).forEach(function (item) {
+        data.append('files[]', item);
+      });
+      this.axios.post(url, data, config).then(function (response) {
         var data = response.data;
         var tasks = _this2.tasks;
 
@@ -2214,6 +2233,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 var baseUrl = "http://localhost:8000";
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Contact",
@@ -2223,6 +2250,11 @@ var baseUrl = "http://localhost:8000";
   data: function data() {
     return {
       task: {},
+      badges: {
+        "PENDING": 'default',
+        "ACTIVO": 'warning',
+        "FEITO": 'success'
+      },
       title: "",
       description: "",
       status: ""
@@ -2233,6 +2265,9 @@ var baseUrl = "http://localhost:8000";
     this.loadData();
   },
   methods: {
+    getbBadge: function getbBadge(status) {
+      return this.badges[status];
+    },
     loadData: function loadData() {
       var _this = this;
 
@@ -38799,7 +38834,13 @@ var render = function () {
           ),
         ]),
         _vm._v(" "),
-        _vm._m(0),
+        _c("div", { staticClass: "form-group" }, [
+          _c("input", {
+            staticClass: "form-control",
+            attrs: { type: "file", name: "files[]", multiple: "" },
+            on: { change: _vm.onChange },
+          }),
+        ]),
         _vm._v(" "),
         _c(
           "button",
@@ -38818,7 +38859,7 @@ var render = function () {
         "table",
         { staticClass: "table table-condensed" },
         [
-          _vm._m(1),
+          _vm._m(0),
           _vm._v(" "),
           _vm._l(_vm.tasks, function (task, index) {
             return _c("tbody", { key: task.id }, [
@@ -39014,6 +39055,8 @@ var render = function () {
                   ),
                 ]),
                 _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(task.filesCount))]),
+                _vm._v(" "),
                 _c("td", [
                   _c(
                     "a",
@@ -39086,17 +39129,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "file", name: "files[]", multiple: "" },
-      }),
-    ])
-  },
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
         _c("th", [_vm._v("#")]),
@@ -39106,6 +39138,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Description")]),
         _vm._v(" "),
         _c("th", [_vm._v("Status")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Files")]),
         _vm._v(" "),
         _c("th", [_vm._v("Action")]),
       ]),
@@ -39135,9 +39169,35 @@ var render = function () {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", [
-      _c("h2", { staticClass: "text-left p-2 text-black mt-5" }, [
+      _c("p", { staticClass: "text-left pb-0 mb-0" }, [
+        _c(
+          "span",
+          { class: "badge badge-" + this.getbBadge(_vm.task.status) },
+          [_vm._v(_vm._s(_vm.task.status))]
+        ),
+      ]),
+      _vm._v(" "),
+      _c("h2", { staticClass: "text-left pt-2 text-black mt-0" }, [
         _vm._v("Showing Task: " + _vm._s(_vm.task.title)),
       ]),
+      _vm._v(" "),
+      _c("p", { staticClass: "text-left" }, [
+        _vm._v(_vm._s(_vm.task.description)),
+      ]),
+      _vm._v(" "),
+      _c("p", [_vm._v("FILES")]),
+      _vm._v(" "),
+      _c(
+        "ul",
+        _vm._l(_vm.task.files, function (file) {
+          return _c("li", { key: file.id }, [
+            _vm._v(
+              "\n                " + _vm._s(file.filename) + "\n            "
+            ),
+          ])
+        }),
+        0
+      ),
     ]),
   ])
 }

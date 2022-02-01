@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use  App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Task;
+use App\File;
 
 class TaskController extends Controller
 {
@@ -16,7 +17,7 @@ class TaskController extends Controller
 
     function show (Request $req, $id)
     {
-        $task= Task::find($id);
+        $task= Task::with('files')->find($id);
         $data = [
             "status" => 200,
             "success" => true,
@@ -27,17 +28,27 @@ class TaskController extends Controller
     
     function create (Request $request)
     {
-        dd($request->all());
         $data = [];
         try {
             $data = $request->all();
             $task = Task::create($data);
+
+            foreach ($data['files'] as $key => $file) {
+                $file_name = time().'_'.$file->getClientOriginalName();
+                $file_path = $file->storeAs('uploads', $file_name, 'public');
+                $task->files()->create([
+                    'filename' => $file_name,
+                    'path' => '/storage/' . $file_path
+                ]);
+            }
+
             $data = [
                 "status" => 200,
                 "success" => true,
                 "task" => $task,
             ] ;
         } catch (\Exception $ex) {
+            dd($ex);
             $data = [
                 "status" => 500,
                 "success" => false,

@@ -15,6 +15,18 @@ class Task extends Model
         'status',
         'attached_images',
     ];
+
+    protected $appends = [
+        'filesCount',
+    ];
+
+    public function files() {
+        return $this->hasMany(File::class);
+    }
+
+    public function getFilesCountAttribute() {
+        return count($this->files);
+    }
 }
 
 
