@@ -3,8 +3,7 @@
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\tasksControl;
-use App\Http\Controllers\tasksController;
+use App\Http\Controllers\Api\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,14 +20,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::name('tasks.')->prefix('tasks')->group(function() {
+    Route::get("/", [TaskController::class, 'index']);
+    Route::get("/{id}", [TaskController::class, 'show']);
+    Route::post("/", [TaskController::class, 'create']);
+    Route::put("/update/{id}", [TaskController::class, 'update']);
+    Route::delete("/delete/{id}", [TaskController::class, 'delete']);
+});
 
-Route::get("list", [tasksControl::class, 'list']);
-Route::post("add", [tasksController::class, 'add']);
-Route::put("update", [tasksController::class, 'update']);
-Route::delete("delete/{id}", [tasksController::class, 'delete']);
-
-
-
+Route::name('multiuploads.')->prefix('multiuploads')->group(function() {
+    Route::get('/', 'UploadController@uploadForm');
+    Route::post('/', 'UploadController@uploadSubmit');
+});
 // Route::get('/', function () {
 //     return 'ola';
 // });

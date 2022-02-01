@@ -6,9 +6,9 @@ import VueRouter from "vue-router";
 Vue.use(VueRouter);
 
 import App from "./App.vue";
-
 import Home from "../js/components/Home.vue";
-import ContactList from "../js/components/ContactList.vue";
+import Tasks from "../js/components/Tasks/index.vue";
+import TaskShow from "../js/components/Tasks/show.vue";
 
 import VueAxios from "vue-axios";
 
@@ -16,6 +16,7 @@ import Axios from "axios";
 import Vue from "vue";
 
 Vue.use(VueAxios, axios);
+// Vue.component("Navbar", Navbar)
 
 const routes = [
     {
@@ -24,9 +25,14 @@ const routes = [
         component: Home,
     },
     {
-        name: "/contacts",
-        path: "/contacts",
-        component: ContactList,
+        name: "taskIndex",
+        path: "/tasks",
+        component: Tasks,
+    },
+    {
+        name: "taskShow",
+        path: "/tasks/:id",
+        component: TaskShow,
     },
 ];
 

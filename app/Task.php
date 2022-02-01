@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class task extends Model
+class Task extends Model
 {
-    protected $table = 'task';
+    // public $timestamps = false;
+    // protected $table = 'tasks';
     protected $fillable = [
         'title',
         'description',

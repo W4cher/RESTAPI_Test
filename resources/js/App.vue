@@ -6,10 +6,11 @@
 </template>
 
 <script>
-export default {
-    name: "app",
-    components: {
-        Navbar,
-    },
-};
+    import Navbar from "../js/components/Navbar.vue";
+    export default {
+        name: "app",
+        components: {
+            Navbar,
+        },
+    };
 </script>

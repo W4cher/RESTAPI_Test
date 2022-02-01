@@ -17,9 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-    Route::prefix('api')-> group(function(){
-    //Get Contacts  
-        Route::get('getContacts', 'ContactController@getcontacts');
-    });
+Route::get('/tasks', function () {
+    return view('welcome');
+});
 
-
+Route::get('/tasks/{id}', function ($id) {
+    return view('welcome');
+});
